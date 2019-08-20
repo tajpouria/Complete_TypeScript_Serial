@@ -16,7 +16,7 @@ const words = ["one", "two"];
 let targetWord: boolean;
 
 words.map(w => {
-  if (w === "two") targetWord = true;
+    if (w === "two") targetWord = true;
 });
 
 // 3. anytime type inference doesn't realize the purpose of code
@@ -25,7 +25,7 @@ const numbers = [-12, -13, 12];
 let numberAboveZero: boolean | number = false;
 
 numbers.map(n => {
-  if (n > 0) numberAboveZero = n;
+    if (n > 0) numberAboveZero = n;
 });
 ```
 
@@ -34,13 +34,13 @@ numbers.map(n => {
 ```typescript
 // just using never whenever we sure the function never gonna return a value
 const throwError = (msg: string): never => {
-  throw new Error(msg);
+    throw new Error(msg);
 };
 
 const returnSomeValue = (value: string): string => {
-  if (!value) throw new Error();
+    if (!value) throw new Error();
 
-  return value;
+    return value;
 };
 ```
 
@@ -48,18 +48,18 @@ const returnSomeValue = (value: string): string => {
 
 ```typescript
 const human = {
-  firstName: "Rex",
-  age: 4,
-  coordinates: { x: 43, y: -23 },
-  // I don't know:
-  tellSth(msg: string): void {
-    console.log(msg);
-  }
+    firstName: "Rex",
+    age: 4,
+    coordinates: { x: 43, y: -23 },
+    // I don't know:
+    tellSth(msg: string): void {
+        console.log(msg);
+    }
 };
 
 const { firstName, age }: { firstName: string; age: number } = human;
 const {
-  coordinates: { x, y }
+    coordinates: { x, y }
 }: { coordinates: { x: number; y: number } } = human;
 ```
 
@@ -86,20 +86,20 @@ const drink: Drink = {'Brown', true, 40}
 
 ```typescript
 interface Vehicle {
-  name: string;
-  summary(): string;
+    name: string;
+    summary(): string;
 }
 
 const printSummary = (vehicle: Vehicle): void => {
-  console.log(vehicle.summary());
+    console.log(vehicle.summary());
 };
 
 const oldCivic = {
-  name: "Civic",
-  age: 12,
-  summary() {
-    return this.name;
-  }
+    name: "Civic",
+    age: 12,
+    summary() {
+        return this.name;
+    }
 };
 
 printSummary(oldCivic);
@@ -115,17 +115,17 @@ printSummary(oldCivic);
 
 // class fields
 class Car {
-  constructor(public color: string, private model: string) {}
+    constructor(public color: string, private model: string) {}
 
-  printSummary = (): void => {
-    console.log(`Color: ${this.color} model: ${this.model}`);
-  };
+    printSummary = (): void => {
+        console.log(`Color: ${this.color} model: ${this.model}`);
+    };
 }
 
 class Golf extends Car {
-  constructor(color: string, model: string, public name: string) {
-    super(color, model);
-  }
+    constructor(color: string, model: string, public name: string) {
+        super(color, model);
+    }
 }
 ```
 
@@ -143,5 +143,77 @@ class Golf extends Car {
 
 ```typescript
 // make sure class satisfied all type or interface requirement
-export class Company implements Mappable 
+export class Company implements Mappable
+```
+
+# section three
+
+```typescript
+    "outDir": "./build"  // specify the where compiled code should go
+    "rootDir": "./src"   // specify your code root dir
+
+// automate development process
+ "scripts": {
+    "start:build": "tsc -w",
+    "start:run": "nodemon build/index.js",
+    "start": "concurrently yarn:start:*"
+  },
+
+// union operator in typescript will just allow you the access to same property that  two methods have
+
+function (arg: string | number[]){
+  arg[0] = 5 // cuz an error cuz string is immutable
+}
+```
+
+## type guard
+
+```typescript
+// primitive value
+typeof number string boolean symbol
+// eg.
+if(typeof str === 'string')
+
+// every other type value
+// eg.
+array instanceof Array
+obj instanceof MyCostumeType
+
+// class getter && setter refresh
+
+class NumberCollection{
+  get length():number{
+    return this.collection.length
+  }
+
+  set setCollection(collection:string[]):void{
+      this.collection = collection
+  }
+}
+
+console.log(NumberCollection.length) // also it's possible used it's instance
+NumberCollection.setCollection = ['h','e']
+```
+
+## abstract classes
+
+<b> Really intersting </b>
+
+```typescript
+export abstract class Tell {
+    abstract word: strig;
+
+    tell(): void {
+        consoe.log(this.word);
+    }
+}
+
+class Human extends Tell {
+    get word(): string {
+        return "hello abstract";
+    }
+}
+
+const human = new Human();
+human.tell();
 ```
