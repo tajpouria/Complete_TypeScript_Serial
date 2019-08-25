@@ -217,3 +217,47 @@ class Human extends Tell {
 const human = new Human();
 human.tell();
 ```
+
+# Section Three
+
+> yarn add @types/node #in order to using node builtins
+
+## readFileSync
+
+```typescript
+import fs from "fs";
+
+fs.readFileSync("football.csv", {
+    encoding: "utf-8" // make it return a string
+});
+```
+
+## enum
+
+```typescript
+enum MatchResult {
+    HomeWin = "H",
+    AwayWin = "A"
+}
+
+const displyResult = (): MatchResult => {
+    return MatchResult.HomeWin; // H
+};
+```
+
+## Date
+
+```typescript
+// month start from index [0] eg. 0 === Jan
+type AssignedDate = new Date(year: number, month: number, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined))
+```
+
+## Generics
+
+```typescript
+class StoreDataAsAnyType<T> {
+    data: T[];
+}
+
+const storeDateAsNumber = new StoreDateAsAnyType<number>();
+```

@@ -9,3 +9,4 @@ stringCollection.sort();
 
 console.log(numberCollection.collection);
 console.log(stringCollection.collection);
+
