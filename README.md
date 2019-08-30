@@ -1,4 +1,4 @@
-#section one
+# Section one
 
 ## when should use type annotations
 
@@ -146,7 +146,7 @@ class Golf extends Car {
 export class Company implements Mappable
 ```
 
-# section three
+# Section three
 
 ```typescript
     "outDir": "./build"  // specify the where compiled code should go
@@ -197,14 +197,14 @@ NumberCollection.setCollection = ['h','e']
 
 ## abstract classes
 
-<b> Really intersting </b>
+<b> Really interesting </b>
 
 ```typescript
 export abstract class Tell {
-    abstract word: strig;
+    abstract word: string;
 
     tell(): void {
-        consoe.log(this.word);
+        console.log(this.word);
     }
 }
 
@@ -220,7 +220,7 @@ human.tell();
 
 # Section Three
 
-> yarn add @types/node #in order to using node builtins
+> yarn add @types/node #in order to using node
 
 ## readFileSync
 
@@ -240,7 +240,7 @@ enum MatchResult {
     AwayWin = "A"
 }
 
-const displyResult = (): MatchResult => {
+const displayResult = (): MatchResult => {
     return MatchResult.HomeWin; // H
 };
 ```
@@ -260,4 +260,94 @@ class StoreDataAsAnyType<T> {
 }
 
 const storeDateAsNumber = new StoreDateAsAnyType<number>();
+```
+
+# Section Four
+
+```typescript
+// Constraints
+interface Printable {
+    print(): void;
+}
+
+function callPrintMethods<T extends Printable>(array: T[]) {
+    for (let i = 0; i < array.length; i++) {
+        array[i].print();
+    }
+}
+
+// Object.assign()
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3 };
+
+Object.assign(obj2, obj1);
+
+console.log(obj2); // {c: 3, a: 1, b: 2}
+```
+
+Serialize talking about take some information kind of thing and make it to some save able format eg. JSON
+
+DeSerialize talking about give some save able sort of information and make it to parsable format eg. Object
+
+```json
+// by generating default tsconfig.json we got a different behavior around possibility to undefined
+    "strict": true,/* Enable all strict type-checking options. */
+```
+
+```typescript
+// in TS string can be a type
+type BestName = 'Stephen'
+
+const justCallingBestName = (name: BestName):void => {
+    console.log(name)
+}
+
+justCallingBestName('Stephen') // it will throw an error if try other strings
+
+// in JS therefore TS Object keys are always string
+const colors = {}
+colors[4] = 'yellow'
+Object.keys(colors)  => ["4"]
+
+______________________________________________
+
+// so then in TS Object keys can be an type too
+
+// generic constrains
+function iWillReturnOneOfTheGivenObjectValues<T, K extends keyof T>(
+    object: T,
+    key: K
+): T[K] {
+    return object[key];
+}
+
+
+// this reminder in javascript
+
+// this in js always refereed to what is on the left hand side eg.
+const colors = { color: "red", printColor(){ console.log(this.color) } }
+
+colors.printColor() // red  cuz this refereed to colors
+
+
+const printColor = colors.printColor
+
+printColor() // undefined  cuz nothing is on the left hand side of it
+
+// this problem we use binding and bounded method always inferred to it's container Object
+
+// for in
+
+const obj = {"hello":2, "world":3}
+for(objectKey in obj){
+   console.log(objectKey)
+}
+// 'world'
+// 'hello'
+
+
+// *** in some cases maybe our constraints also be an generic
+
+export class View<T extends Model<K>,K>{}
+
 ```
