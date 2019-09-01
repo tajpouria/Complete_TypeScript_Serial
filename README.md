@@ -336,18 +336,266 @@ printColor() // undefined  cuz nothing is on the left hand side of it
 
 // this problem we use binding and bounded method always inferred to it's container Object
 
-// for in
+// for ... in && for ... of
 
 const obj = {"hello":2, "world":3}
+const arr = ['hello', 'world']
+
 for(objectKey in obj){
    console.log(objectKey)
 }
 // 'world'
 // 'hello'
+for (let key in arr)
+    console.log(key)
+// 0
+// 1
 
+for(let value of obj)
+    console.log(value)
+// Error: obj is not iterable
+for (let value of arr)
+    console.log(value)
+// 'hello'
+// 'world'
 
 // *** in some cases maybe our constraints also be an generic
-
 export class View<T extends Model<K>,K>{}
 
+```
+
+# Section four
+
+```typescript
+// cookie-session reminder
+app.use(cookieSession({ key: ["lssda"] })); // before routes
+interface session {
+    [key: string]: any;
+}
+
+//eg. /login
+req.session = { loggedIn: true };
+
+//eg. /logout
+req.session = undefined;
+```
+
+### @Decorators
+
+```javascript
+// prototypal inheritance reminder
+function Boat(){
+    this.color = "red"
+}
+
+const boat = new Boat()
+
+> boat -> Boat {color: "red"}
+Boat.prototype.sink = function(){
+    console.log('sinking')
+}
+
+> boat.sink() -> 'sinking'
+```
+
+```typescript
+// Decorators : functions that can modify/change/anything properties/methods inside a class
+// Not same to JS decorators
+// Used inside class only
+// Experimental !!
+
+class Boat {
+    private color = "red";
+
+    get formattedColor(): string {
+        return `Boat Color is ${this.color}`;
+    }
+    @testDecorator
+    public pilot(): void {
+        console.log("Swiss");
+    }
+}
+
+function testDecorator(target: any, key: string, desc: PropertyDescriptor) {
+    console.log(`target:`, target);
+    console.log(`key: ${key}`);
+    console.log("property descriptor ", desc);
+}
+// output: target // Boat prototypes formattedColor[Getter] pilot[Function]
+
+// key pilot
+
+// property descriptor
+//{value: [Function]
+// writable: true,
+// enumerable: true,
+// configurable: true }
+
+// eg. decorators
+class Cat {
+    @logError
+    public fetchCat() {
+        throw new Error();
+    }
+}
+
+function logError(target: any, key: string, desc: PropertyDescriptor) {
+    const method = desc.value;
+
+    try {
+        method();
+    } catch {
+        console.error("Oops something goes wrong.");
+    }
+}
+
+new Cat().fetchCat();
+// Error: Oops something goes wrong.
+
+// eg decorators factory
+class Cat {
+    @logError("Something Bad Happened")
+    public fetchCat() {
+        throw new Error();
+    }
+}
+
+function logError(errorMsg: string) {
+    return function(target: any, key: string, desc: PropertyDescriptor) {
+        const method = desc.value;
+        try {
+            method();
+        } catch {
+            console.error(errorMsg);
+        }
+    };
+}
+
+new Cat().fetchCat();
+// Error: Something Bad Happened
+
+// we can call decorators on each properties, methods or accessors and same thing
+// applied for it's static
+class Human {
+    @testDecorator
+    public static name = "Stephen";
+
+    @testDecorator
+    private static sayHello() {
+        console.log("Hello");
+    }
+
+    @testDecorator
+    get static age() {
+        return 17;
+    }
+}
+
+function testDecorator(target: any, key: string, desc: PropertyDescriptor) {
+    console.log(key);
+
+    console.log(target[key]);
+    // GOTCHA :: properties defined on this object and
+    // this is methods that store on object prototype
+}
+
+// Decorators also can used for class methods args
+class Boat {
+    public pilot(
+        @parameterDecorator speed: string,
+        @parameterDecorator isChannelOpen: boolean
+    ): void {
+        if (speed === "fast" && isChannelOpen) {
+            console.log("Swish");
+        }
+    }
+}
+
+function parameterDecorator(target: any, key: string, index: number) {
+    console.log(key, index);
+
+    // output:
+    // pilot 1
+    // pilot 0
+}
+
+// Decorators can also applied for class it self
+@classDecorator
+class Boat {
+    private color = "red";
+}
+
+function classDecorator(constructor: typeof Boat) {
+    console.log(constructor);
+
+    // output:
+    // [Function: Boat]
+}
+
+```
+
+### Metadata
+
+```typescript
+// Proposed to added to JS and thus TS
+// Snippets of info that can tied to object
+```
+
+i used reflect-matadata package in order to working with meta data
+
+> yarn add reflect-matadata
+
+```typescript
+import "reflect-matadata"; // it will automatically adding Reflect method to global scoop
+
+const plane = {
+    color: "red"
+};
+Reflect.defineMetadata("hi", "Hi There", plane);
+Reflect.defineMetadata("hi", "Hi There", plane, "color");
+
+const hi = Reflect.getMetadata("hi", plane);
+const planeColorHi = Reflect.getMetadata("hi", plane, "color");
+
+console.log(hi); // Hi There
+console.log(planeColorHi); // Hi There
+```
+
+### Meta-data and Decorator Together
+
+```typescript
+import "reflect-metadata";
+
+class Plane {
+    @markDecorator
+    public fly() {
+        console.log("vrrrr!");
+    }
+}
+
+function markDecorator(target: any, key: string, des: PropertyDescriptor) {
+    Reflect.defineMetadata("secret", "THIS IS SECRET", target, key);
+}
+
+const secret = Reflect.getMetadata("secret", Plane.prototype, "fly");
+console.log(secret); // THIS IS SECRET"
+
+@printMetaData
+class Plane {
+    @markDecorator
+    public fly() {
+        console.log("vrrrr!");
+    }
+}
+
+function markDecorator(target: any, key: string, des: PropertyDescriptor) {
+    Reflect.defineMetadata("secret", "THIS IS SECRET", target, key);
+}
+
+function printMetaData(constructor: typeof Plane) {
+    for (let key in constructor.prototype) {
+        console.log(Reflect.getMetadata("secret", constructor.prototype, key));
+        // THIS IS SECRET"
+    }
+}
 ```
