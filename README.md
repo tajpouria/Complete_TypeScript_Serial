@@ -599,3 +599,40 @@ function printMetaData(constructor: typeof Plane) {
     }
 }
 ```
+
+## Section five
+
+```typescript
+interface Todo{
+    title:string
+}
+// specify response.data coming up from axios
+axios.get<Todo[]>
+
+interface {
+    type: ActionType.Fetch_Todo; // enum Action Type
+    payload: Todo[];
+}
+
+export const fetchTodos = () => async (dispatch: Dispatch) => {
+    const response: AxiosResponse = await axios.get<Todo[]>(URL);
+// specify dispatch action type in redux-thunk
+    dispatch<FetchTodoAction>({
+        type: ActionTypes.FETCH_TODOS,
+        payload: response.data
+    });
+};
+
+export interface StoreState {
+    todos: Todo[];
+}
+export const reducers = combineReducers<StoreState>({ // validating storeState
+    todos: todoReducer
+});
+
+// using a value as type
+const deleteTodo = (id: number ) => id
+interface IProps {
+    deleteTodo: typeof deleteTodo;
+}
+```
